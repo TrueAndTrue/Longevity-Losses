@@ -5,7 +5,7 @@ const router = require('./router');
 
 app.use(cors());
 app.use(express.json());
-app.use(router);
+app.use(router);gi
 
 app.listen(5000, () => {
   console.log('server is running on port 5000')
