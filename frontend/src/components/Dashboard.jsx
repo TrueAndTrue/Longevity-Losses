@@ -1,11 +1,12 @@
-import { Box, Image } from '@chakra-ui/react'
-import strong from '../assets/strong.png'
-import healthy from '../assets/healthy.png'
-import dieting from '../assets/dieting.png'
-import { useState, useEffect } from 'react'
+import { Box, Image } from '@chakra-ui/react';
+import strong from '../assets/strong.png';
+import healthy from '../assets/healthy.png';
+import dieting from '../assets/dieting.png';
+import { useState, useEffect } from 'react';
 import Popup from './Popup';
 import apiClient from '../services/ApiClient';
-import { useAuth0 } from '@auth0/auth0-react'
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 const Dashboard = props => {
 

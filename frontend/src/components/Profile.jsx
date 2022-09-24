@@ -33,6 +33,9 @@ const Profile = () => {
   const calForm = () => {
     
     setShowFire(!showFire);
+    setTimeout(() => {
+      setShowFire(false)
+    }, 3000)
     console.log(showFire)
 
 
@@ -98,16 +101,38 @@ const Profile = () => {
   }, [user])
 
   return (
-    <Box display={'flex'} flexDir={'row'} height={'100vh'} width={'100vw'} justifyContent={'space-between'} bg={'#0C2131'}>
-      <Box display={'flex'} justifyContent={'center'} alignItems={'flex-start'} color={'white'} height={'100%'} width={'25%'} borderRight={'1px solid white'}>
-        <Box display={'flex'} alignItems={'center'} flexDir={'column'}>
+    <Box 
+      display={'flex'} 
+      flexDir={'row'} 
+      height={'90vh'} 
+      width={'100vw'} 
+      justifyContent={'space-between'} 
+      bg={'#0C2131'} 
+      overflow={'hidden'}
+    >
+      <Box 
+        display={'flex'} 
+        justifyContent={'center'} 
+        alignItems={'flex-start'} 
+        color={'white'} 
+        height={'100%'} 
+        width={'25%'} 
+        borderRight={'1px solid white'} 
+        pos={'relative'} 
+        overflow={'hidden'}
+      >
+        <Box 
+          display={'flex'} 
+          alignItems={'center'} 
+          flexDir={'column'}
+        >
           <Box fontSize={'larger'} fontWeight={'bold'} width={'100%'}> 
             <Box display={'flex'} justifyContent={'space-between'} width={'100%'} mt={'10px'}>
               <Box display={'flex'}>
                 <h1>Weight Lost</h1>
               </Box>
               <Box display={'flex'} flexDir={'column'} alignItems={'flex-end'}>
-                <Button borderRadius={'50%'} bgColor={'green.400'} fontSize={'medium'} width={'20px'} onClick={calForm}>+</Button>
+                <Button borderRadius={'50%'} bgColor={'green.400'} fontSize={'medium'} width={'20px'} onClick={calForm} pos={'relative'} zIndex={10}>+</Button>
               </Box>
             </Box>
                 {calsError && <Box color={'red'} fontSize={'small'}> {errorMsg} </Box>}
