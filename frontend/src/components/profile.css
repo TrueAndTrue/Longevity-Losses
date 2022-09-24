@@ -1,0 +1,17 @@
+.fire[data-showFire = 'true'] {
+  display: block;
+}
+
+.fire {
+  display: none;
+}
+
+@-webkit-keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
+}
