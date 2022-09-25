@@ -9,6 +9,7 @@ import fire from '../assets/fire.gif';
 import './profile.css';
 import RemoveBtn from "./RemoveBtn";
 import ValueAlters from "../services/ValueAlters";
+import ProfilePopup from "./ProfilePopup";
 
 const Profile = () => {
   const { user } = useAuth0();
@@ -23,20 +24,11 @@ const Profile = () => {
   const [displayMeals, setDisplayMeals] = useState([]);
   const [newMealInfo, setNewMealInfo] = useState('');
   const [newMealInfo2, setNewMealInfo2] = useState('');
-
-
-  // const toggleFire = () => {
-  //   setShowFire(!showFire);
-  // }
-
+  const [recipes, setRecipes] = useState([]);
+  const [recipeQuery, setRecipeQuery] = useState('');
+  const [trigger, setTrigger] = useState(true);
 
   const calForm = () => {
-    
-    setShowFire(!showFire);
-    setTimeout(() => {
-      setShowFire(false)
-    }, 3000)
-    console.log(showFire)
 
 
     // checking if a week has passed
@@ -68,10 +60,18 @@ const Profile = () => {
     const mealInfo = newMealInfo + ': ' + newMealInfo2;
     apiClient.updateMeals(user.sub, mealInfo, ValueAlters.calendarChange(calVal));
     setNewMealInfo('');
+    setNewMealInfo2('');
   }
 
-  const submitCals = () => {
-    apiClient.updateCals(user.sub, newCalsInfo);
+  const submitCals = async () => {
+    setShowFire(!showFire);
+    await apiClient.updateCals(user.sub, newCalsInfo);
+    const clientCals = await apiClient.getCals(user.sub);
+    setCalsInfo(clientCals);
+    setTimeout(() => {
+      setShowFire(false)
+    }, 2000)
+
     setCalsInput(false);
   }
   
@@ -91,6 +91,15 @@ const Profile = () => {
   }, [calVal]);
 
   useEffect(() => {
+    const query = async () => {
+      console.log(recipeQuery)
+      setRecipes(await apiClient.getRecipes(recipeQuery));
+      console.log(recipes)
+    };
+    query();
+  }, [recipeQuery]);
+
+  useEffect(() => {
     const grabUser = async () => {
       const clientUser = await apiClient.pageLoad(user.sub);
       const clientCals = await apiClient.getCals(user.sub);
@@ -101,15 +110,22 @@ const Profile = () => {
   }, [user])
 
   return (
+
+
+    
     <Box 
-      display={'flex'} 
-      flexDir={'row'} 
-      height={'90vh'} 
-      width={'100vw'} 
-      justifyContent={'space-between'} 
-      bg={'#0C2131'} 
-      overflow={'hidden'}
+    display={'flex'} 
+    flexDir={'row'} 
+    height={'90vh'} 
+    width={'100vw'} 
+    justifyContent={'space-between'} 
+    bg={'#0C2131'} 
+    overflow={'hidden'}
     >
+      <ProfilePopup trigger={trigger} setTrigger={setTrigger} />
+
+        {/** LEFT COL */}
+
       <Box 
         display={'flex'} 
         justifyContent={'center'} 
@@ -125,20 +141,50 @@ const Profile = () => {
           display={'flex'} 
           alignItems={'center'} 
           flexDir={'column'}
+          width={'80%'}
         >
-          <Box fontSize={'larger'} fontWeight={'bold'} width={'100%'}> 
-            <Box display={'flex'} justifyContent={'space-between'} width={'100%'} mt={'10px'}>
-              <Box display={'flex'}>
+          <Box 
+            fontSize={'larger'} 
+            fontWeight={'bold'} 
+            width={'100%'}
+          > 
+            <Box 
+              display={'flex'} 
+              justifyContent={'space-between'} 
+              width={'100%'} 
+              mt={'10px'}
+            >
+              <Box 
+                display={'flex'}
+              >
                 <h1>Weight Lost</h1>
               </Box>
-              <Box display={'flex'} flexDir={'column'} alignItems={'flex-end'}>
-                <Button borderRadius={'50%'} bgColor={'green.400'} fontSize={'medium'} width={'20px'} onClick={calForm} pos={'relative'} zIndex={10}>+</Button>
+              <Box 
+                display={'flex'} 
+                flexDir={'column'} 
+                alignItems={'flex-end'}
+              >
+                <Button 
+                  borderRadius={'50%'} 
+                  bgColor={'green.400'} 
+                  fontSize={'xx-large'} 
+                  width={'20px'} 
+                  onClick={calForm} 
+                  pos={'relative'} 
+                  paddingBottom={'5px'}
+                  zIndex={10}
+                >+
+                </Button>
               </Box>
             </Box>
                 {calsError && <Box color={'red'} fontSize={'small'}> {errorMsg} </Box>}
           </Box>
-          <Box display={'flex'} flexDir={'column'}> {calsInfo && calsInfo[0].weight_history.map((weight, i) => {
-            return <Box mt={'12px'} display={'flex'} fontSize={'18px'} alignItems={'center'}> {weight[0]} you weighed {weight[2]}lbs <Box ml={'44px'} fontSize={'xx-large'}> {weight[1] / -1} </Box> </Box>
+          <Box 
+            display={'flex'} 
+            flexDir={'column'}
+            width={'100%'}
+          > {calsInfo && calsInfo[0].weight_history.map((weight, i) => {
+            return <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={'15px'} border={'2px solid white'} borderRadius={'0.375rem'} minWidth={'100%'} height={'60px'}> <Box padding={'5px'} display={'flex'} fontSize={'18px'} alignItems={'center'}> {weight[0]} you weighed {weight[2]}lbs  <Box ml={'20px'} fontSize={'xx-large'}> {weight[1] / -1} </Box>  </Box> </Box>
           }
           )}
           <Box> 
@@ -151,22 +197,112 @@ const Profile = () => {
             </FormControl>}
             <Image src={fire} mt={'50px'} data-showFire={showFire} className={'fire'}></Image>
           </Box>
+
           </Box>
+
+        </Box>
+
+      </Box>
+
+        {/** MIDDLE COL */}
+
+      <Box 
+        display={'flex'} 
+        flexDir={'column'} 
+        justifyContent={'flex-start'} 
+        alignItems={'center'} 
+        color={'white'} 
+        height={'100%'} 
+        width={'42%'}
+       
+      >
+        
+        <Box 
+          fontSize={'x-large'} 
+          fontWeight={'bold'}
+          > You joined on {userInfo && userInfo[0].created_at}
+        </Box>
+
+        <Box 
+          fontSize={'xx-large'} 
+          fontWeight={'bold'} 
+          mt={'5px'}
+          > You have lost a total of: {calsInfo[0] && calsInfo[0].starting_weight - calsInfo[0].weight_history[calsInfo[0].weight_history.length - 1][2]}lbs 
+        </Box>
+
+
+
+    <Box display={'flex'} flexDir={'column'} justifyContent={'flex-start'} alignItems={'center'} overflowY={'auto'} className="middle">
+        <Box 
+          fontSize={'x-large'} 
+          fontWeight={'bold'}
+           mt={'5px'}
+           > Diet Friendly Recipes
+        </Box> 
+
+      <FormControl 
+        width={'100%'} 
+        display={'flex'} 
+        justifyContent={'center'} 
+        flexDir={'column'} 
+        alignItems={'center'}
+      >
+        <FormHelperText zIndex={1} color={'white'}>Search Recipes:</FormHelperText>
+          <Box display={'flex'} justifyContent={'space-between'} flexDir={'column'}>
+            <Input width={'200px'} zIndex={1} value={recipeQuery} onChange={(e) => setRecipeQuery(e.target.value)} placeHolder={'Chicken Stew'} color={'white'} m={'5px'}></Input> 
+          </Box>
+      </FormControl>
+      
+      <Box display={'flex'} height={'100%'} width={'100%'} flexDir={'row'} flexWrap={'wrap'} justifyContent={'center'}>
+        {recipes && recipes.map((el) => 
+          <Box display={'flex'} flexDir={'column'} alignItems={'center'} m={'10px'} width={'30%'}> <Box fontSize={'large'}> {el.recipe.label} </Box> <Box> </Box> <Image src={el.recipe.image} width={'100%'}></Image>  <Box> <a href={el.recipe.shareAs}> Checkout this recipe </a> </Box> </Box>
+        )}
+        
+        </Box>
         </Box>
       </Box>
-      <Box display={'flex'} flexDir={'column'} justifyContent={'flex-start'} alignItems={'center'} color={'white'} height={'100%'} width={'33%'}>
-        <Box fontSize={'x-large'} fontWeight={'bold'}> You joined on {userInfo && userInfo[0].created_at}</Box>
-        <Box fontSize={'xx-large'} fontWeight={'bold'} mt={'5px'}> You have lost a total of: {calsInfo[0] && calsInfo[0].weight_history[calsInfo[0].weight_history.length - 1][1]}lbs </Box>
-        <Box fontSize={'x-large'} fontWeight={'bold'} mt={'5px'}> <h1>Daily Calorie Limit: {calsInfo[0] && calsInfo[0].daily_cals}</h1> </Box> 
-      </Box>
-      <Box display={'flex'} justifyContent={'center'} alignItems={'flex-start'} color={'white'} height={'100%'} borderLeft={'1px solid white'}>
-      <Box display={'flex'} alignItems={'center'} flexDir={'column'}>
-          <Box fontSize={'larger'} fontWeight={'bold'}> <h1> Meal Tracker </h1> </Box>
-          <Box bg={'white'} color={'black'} margin={'35px'} boxShadow={'0 30px 40px 0 rgb(255 255 255 / 20%)'}>
-            <Calendar onChange={setCalVal} value={calVal} background={'white'}></Calendar>
+
+
+        {/** RIGHT COL */}
+
+      <Box 
+        display={'flex'} 
+        justifyContent={'center'} 
+        alignItems={'flex-start'} 
+        color={'white'} 
+        height={'100%'} 
+        borderLeft={'1px solid white'}
+        width={'25%'}
+      >
+      <Box 
+        display={'flex'} 
+        alignItems={'center'} 
+        flexDir={'column'}
+      >
+          <Box 
+            fontSize={'larger'} 
+            fontWeight={'bold'}
+            > <h1> Meal Tracker </h1> 
+          </Box>
+          <Box 
+            bg={'white'} 
+            color={'black'} 
+            margin={'35px'} 
+            boxShadow={'0 30px 40px 0 rgb(255 255 255 / 20%)'}
+          > 
+
+            {/** CALENDAR */}
+
+          <Calendar onChange={setCalVal} value={calVal} background={'white'}></Calendar>
           </Box>
           <Box width={'100%'}>
-          <FormControl width={'100%'} display={'flex'} justifyContent={'center'} flexDir={'column'} alignItems={'center'}>
+          <FormControl 
+            width={'100%'} 
+            display={'flex'} 
+            justifyContent={'center'} 
+            flexDir={'column'} 
+            alignItems={'center'}
+          >
               <FormHelperText color={'white'}>Input Meal below</FormHelperText>
               <Box display={'flex'} justifyContent={'space-between'} flexDir={'column'}>
                 <Input width={'200px'} value={newMealInfo} onChange={(e) => setNewMealInfo(e.target.value)} placeHolder={'PB Sandwich'} color={'white'} m={'5px'}></Input> 

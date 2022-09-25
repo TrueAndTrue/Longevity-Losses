@@ -15,6 +15,10 @@
   z-index: 20;
 }
 
+.middle::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
 @-webkit-keyframes scale-up-center {
   0% {
     -webkit-transform: scale(1);

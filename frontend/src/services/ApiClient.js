@@ -111,9 +111,20 @@ const apiClient = {
       })
     });
     return pog;
-  }
+  },
 
-  
+  getRecipes: async (q) => {
+    const pog = await fetch(`https://edamam-recipe-search.p.rapidapi.com/search?q=${q}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-rapidapi-key': '4ef935a280msh836fc83ca7db63cp14bb11jsn1719aea5cc64'
+      },
+    });
+    const response = await pog.json();
+    return response.hits;
+  }
 
 }
 
