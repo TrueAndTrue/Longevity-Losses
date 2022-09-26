@@ -27,7 +27,7 @@ const Navbar = ({navLink}) => {
  
   return (
       <header>
-        {navLink === 'my dashboard' && <Box display={'flex'} alignItems="center" justifyContent="space-between" borderBottom={'1px solid #A9A9A9'} height={'10vh'} width={'100vw'}>
+        {navLink === 'my dashboard' && <Box display={'flex'} alignItems="center" justifyContent="space-between" borderBottom={'1px solid #A9A9A9'} height={'13vh'} width={'100vw'}>
           <Box ml={3} textColor={'white'} opacity={1}>
             <h1 >Longevity Losses</h1>
           </Box>

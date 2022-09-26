@@ -9,7 +9,7 @@ import {
 
 export default function Footer() {
   return (
-    <Box borderTop={'2px solid white'}>
+    <Box borderTop={'2px solid white'} height={'8vh'}>
       <Container
         as={Stack}
         maxW={'6xl'}

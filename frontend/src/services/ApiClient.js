@@ -48,7 +48,7 @@ const apiClient = {
       body: JSON.stringify({
         user_id: id,
         daily_cals: daily,
-        weight_history: `[[${Date.now()}, 0, ${starting}]]`,
+        weight_history: `[[1659832594000,0,260]]`,
         weight_goal: goal,
         starting_weight: starting
       })

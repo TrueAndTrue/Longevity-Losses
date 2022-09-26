@@ -10,6 +10,7 @@ import './profile.css';
 import RemoveBtn from "./RemoveBtn";
 import ValueAlters from "../services/ValueAlters";
 import ProfilePopup from "./ProfilePopup";
+import { VictoryLine, VictoryChart, VictoryAxis, VictoryTheme, VictoryZoomContainer } from 'victory';
 
 const Profile = () => {
   const { user } = useAuth0();
@@ -26,7 +27,8 @@ const Profile = () => {
   const [newMealInfo2, setNewMealInfo2] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [recipeQuery, setRecipeQuery] = useState('');
-  const [trigger, setTrigger] = useState(true);
+  const [chartData, setChartData] = useState([]);
+  const [chartLoader, setChartLoader] = useState(false);
 
   const calForm = () => {
 
@@ -63,6 +65,24 @@ const Profile = () => {
     setNewMealInfo2('');
   }
 
+
+  useEffect(() => {
+    if (calsInfo) {
+      const tempData = []
+      calsInfo[0].weight_history.forEach((weight) => {
+        const date = ValueAlters.graphChange(weight[0]);
+        const weightNum = weight[2];
+        tempData.push({ date, weightNum});
+      })
+      setChartData(tempData)
+      setTimeout(() => {
+        setChartLoader(true)
+      }, 500)
+    }
+
+  }, [calsInfo])
+
+
   const submitCals = async () => {
     setShowFire(!showFire);
     await apiClient.updateCals(user.sub, newCalsInfo);
@@ -74,6 +94,19 @@ const Profile = () => {
 
     setCalsInput(false);
   }
+
+  const chartTheme = {
+    axis: {
+      style: {
+        tickLabels: {
+          // this changed the color of my numbers to white
+          fill: 'white',
+          padding: 1
+        },
+      },
+    },
+  };
+  
   
   useEffect(() => {
     const calendarLogic = async () => {
@@ -111,8 +144,6 @@ const Profile = () => {
 
   return (
 
-
-    
     <Box 
     display={'flex'} 
     flexDir={'row'} 
@@ -122,7 +153,7 @@ const Profile = () => {
     bg={'#0C2131'} 
     overflow={'hidden'}
     >
-      <ProfilePopup trigger={trigger} setTrigger={setTrigger} />
+
 
         {/** LEFT COL */}
 
@@ -142,6 +173,7 @@ const Profile = () => {
           alignItems={'center'} 
           flexDir={'column'}
           width={'80%'}
+          height={'100%'}
         >
           <Box 
             fontSize={'larger'} 
@@ -179,15 +211,21 @@ const Profile = () => {
             </Box>
                 {calsError && <Box color={'red'} fontSize={'small'}> {errorMsg} </Box>}
           </Box>
-          <Box 
-            display={'flex'} 
-            flexDir={'column'}
-            width={'100%'}
-          > {calsInfo && calsInfo[0].weight_history.map((weight, i) => {
-            return <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={'15px'} border={'2px solid white'} borderRadius={'0.375rem'} minWidth={'100%'} height={'60px'}> <Box padding={'5px'} display={'flex'} fontSize={'18px'} alignItems={'center'}> {weight[0]} you weighed {weight[2]}lbs  <Box ml={'20px'} fontSize={'xx-large'}> {weight[1] / -1} </Box>  </Box> </Box>
-          }
-          )}
-          <Box> 
+            <Box 
+              display={'flex'} 
+              flexDir={'column'}
+              width={'100%'}
+              height={'67%'}
+              overflowY={'auto'}
+              className={'left'}
+            > {calsInfo && calsInfo[0].weight_history.map((weight, i) => {
+              if (i === calsInfo[0].weight_history.length - 1) console.log(i)
+              return <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={'15px'} border={'2px solid white'} borderRadius={'0.375rem'} minWidth={'100%'} height={'60px'}> <Box padding={'5px'} display={'flex'} fontSize={'18px'} alignItems={'center'}> {weight[0]} you weighed {weight[2]}lbs  <Box ml={'20px'} fontSize={'xx-large'}> {weight[1] / -1} </Box>  </Box> </Box>
+            })
+            }
+            <Box> 
+            </Box>
+          </Box>
             {calsInput && <FormControl>
               <FormHelperText color={'white'}>Input Weight below</FormHelperText>
               <Box display={'flex'} justifyContent={'space-between'}>
@@ -196,9 +234,29 @@ const Profile = () => {
               </Box>
             </FormControl>}
             <Image src={fire} mt={'50px'} data-showFire={showFire} className={'fire'}></Image>
-          </Box>
+            {chartLoader && <VictoryChart width={600} height={470} scale={{ x: "time" }} theme={ chartTheme } minDomain={{ y: parseInt(calsInfo[0].weight_history[calsInfo[0].weight_history.length - 1][2]) - 10}} padding={40}
+              containerComponent={
+                <VictoryZoomContainer
+                  zoomDimension="x"
+                />
+              }
+            >
+                 <VictoryLine
+                 
+                  style={{
+                    data: { stroke: "white", strokeWidth: 5},
 
-          </Box>
+                  }}
+                  animate={{
+                    duration: 2000,
+                    
+                  }}
+                  data={chartData}
+                  x="date"
+                  y="weightNum"
+                />
+
+            </VictoryChart>}
 
         </Box>
 
@@ -216,12 +274,6 @@ const Profile = () => {
         width={'42%'}
        
       >
-        
-        <Box 
-          fontSize={'x-large'} 
-          fontWeight={'bold'}
-          > You joined on {userInfo && userInfo[0].created_at}
-        </Box>
 
         <Box 
           fontSize={'xx-large'} 
