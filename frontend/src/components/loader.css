@@ -1,0 +1,9 @@
+.loader {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin-left: 539px;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background-color: #fff;
+}

@@ -1,98 +1,92 @@
-
-
-const url = "http://localhost:5000"
-
-
+const url = 'http://localhost:5000';
 
 const apiClient = {
-   pageLoad: async (id) => {
-  
+  pageLoad: async id => {
     const userQuery = await fetch(`${url}/user/${id}`);
     const response = await userQuery.json();
-  
+
     if (response.length === 0) {
       const pog = await fetch(`${url}/user`, {
-        method: "POST",
+        method: 'POST',
         mode: 'cors',
         headers: {
-          'Content-Type': "application/json"
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           user_id: id,
-          created_at: Date.now()
-        })
+          created_at: Date.now(),
+        }),
       });
       // need to return something special to signal this was first time user
       return pog.json();
     }
-      return response;
+    return response;
   },
-  
-  firstTimeCheck: async (id) => {
+
+  firstTimeCheck: async id => {
     const userQuery = await fetch(`${url}/user/cals/${id}`);
     const response = await userQuery.json();
     if (typeof response[0] == 'object') {
       return response[0];
     }
-  
+
     return false;
   },
 
   postFirstCals: async (id, daily, goal, starting) => {
     const pog = await fetch(`${url}/user/cals`, {
-      method: "POST",
+      method: 'POST',
       mode: 'cors',
       headers: {
-        'Content-Type': "application/json"
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         user_id: id,
         daily_cals: daily,
         weight_history: `[[1659832594000,0,260]]`,
         weight_goal: goal,
-        starting_weight: starting
-      })
+        starting_weight: starting,
+      }),
     });
     return pog.json();
   },
 
-  getCals: async (id) => {
+  getCals: async id => {
     const userQuery = await fetch(`${url}/user/cals/${id}`);
     const response = await userQuery.json();
     return response;
   },
 
   updateCals: async (id, newCals) => {
-    console.log(id, newCals);
     const pog = await fetch(`${url}/user/cals/add/${id}`, {
       method: 'PUT',
       mode: 'cors',
       headers: {
-        'Content-Type': "application/json"
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         weight_history: `[${Date.now()}, 0, ${newCals}]`,
-      })
-  })
-    return pog.json();
-},
-
-  updateMeals: async (id, meal, date) => {
-    console.log(id, meal, date, 'meals');
-    const pog = await fetch(`${url}/user/cals/meals/${id}`, {
-      method: 'PUT',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        date, meal
-      })
+      }),
     });
     return pog.json();
   },
 
-  getMeals: async (id) => {
+  updateMeals: async (id, meal, date) => {
+    const pog = await fetch(`${url}/user/cals/meals/${id}`, {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        date,
+        meal,
+      }),
+    });
+    return pog.json();
+  },
+
+  getMeals: async id => {
     const pog = await fetch(`${url}/user/cals/meals/${id}`);
     let res = await pog.json();
     res = JSON.parse(res);
@@ -104,29 +98,32 @@ const apiClient = {
       method: 'DELETE',
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        date, meal
-      })
+        date,
+        meal,
+      }),
     });
     return pog;
   },
 
-  getRecipes: async (q) => {
-    const pog = await fetch(`https://edamam-recipe-search.p.rapidapi.com/search?q=${q}`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-rapidapi-key': '4ef935a280msh836fc83ca7db63cp14bb11jsn1719aea5cc64'
-      },
-    });
+  getRecipes: async q => {
+    const pog = await fetch(
+      `https://edamam-recipe-search.p.rapidapi.com/search?q=${q}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-rapidapi-key':
+            'bdf2b0b83dmshd8ca840f9acbb40p1661d1jsne3db3f540559',
+        },
+      }
+    );
     const response = await pog.json();
     return response.hits;
-  }
-
-}
-
+  },
+};
 
 export default apiClient;
