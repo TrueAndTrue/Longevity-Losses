@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Loader from './Loader';
 import { motion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Typewriter from 'typewriter-effect';
 
 const Dashboard = props => {
   const { user, loginWithPopup } = useAuth0();
@@ -41,7 +42,7 @@ const Dashboard = props => {
             alignItems={'center'}
             height={'100%'}
           >
-            <Box paddingRight={'200px'}>
+            <Box paddingRight={'200px'} mt={'75px'}>
               <Text fontWeight={'semi-bold'} fontSize={'60'} color={'white'}>
                 {' '}
                 The Ultimate
@@ -65,6 +66,36 @@ const Dashboard = props => {
                 {' '}
                 get started today{' '}
               </Button>
+              <Box color="white" mt={'40px'} fontSize={'x-large'}> <Typewriter 
+              options={{
+                delay: 50,
+                loop: true
+              }}
+    
+              onInit={(typewriter) => {
+                typewriter
+                  .typeString("Make your future self proud.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("The worst type of action is inaction.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("Better to die with 1000 mistakes then none at all.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("The destination fuels the journey.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("You will. You can. Achieve.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("Stop waiting. Start doing.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .start();
+              }}
+            
+          /> </Box>
             </Box>
             <Loader />
 
@@ -123,7 +154,7 @@ const Dashboard = props => {
             alignItems={'center'}
             height={'100%'}
           >
-            <Box paddingRight={'200px'}>
+            <Box paddingRight={'200px'} mt={'75px'}>
               <Text fontWeight={'semi-bold'} fontSize={'60'} color={'white'}>
                 {' '}
                 welcome {(user && user.given_name).toLocaleLowerCase()},{' '}
@@ -146,6 +177,36 @@ const Dashboard = props => {
                   my dashboard{' '}
                 </Button>
               </Link>
+              <Box color="white" mt={'40px'} fontSize={'x-large'}> <Typewriter 
+              options={{
+                delay: 50,
+                loop: true
+              }}
+    
+              onInit={(typewriter) => {
+                typewriter
+                  .typeString("Make your future self proud.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("The worst type of action is inaction.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("Better to die with 1000 mistakes then none at all.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("The destination fuels the journey.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("You will. You can. Achieve.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .typeString("Stop waiting. Start doing.")
+                  .pauseFor(1000)
+                  .deleteAll()
+                  .start();
+              }}
+            
+          /> </Box>
             </Box>
             <motion.Box
               drag

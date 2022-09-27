@@ -1,7 +1,4 @@
-
-
 const controllers = {
-
   dateify: (userObj) => {
     const time = 1663129103445;
     const dateTime = new Date(time).toLocaleDateString("en-US");
@@ -16,8 +13,8 @@ const controllers = {
       const dateTime = new Date(time).toLocaleDateString("en-US");
       el[0] = dateTime;
     });
-    return newArr
-  }
-}
+    return newArr;
+  },
+};
 
 module.exports = controllers;

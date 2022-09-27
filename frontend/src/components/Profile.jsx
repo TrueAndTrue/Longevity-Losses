@@ -131,7 +131,9 @@ const Profile = () => {
 
   useEffect(() => {
     const query = async () => {
-      setRecipes(await apiClient.getRecipes(recipeQuery))
+      const tempRecipes = await apiClient.getRecipes(recipeQuery)
+      tempRecipes.pop();
+      setRecipes(tempRecipes);
     };
     query();
   }, [recipeQuery]);
@@ -294,7 +296,7 @@ const Profile = () => {
                   data: { stroke: 'white', strokeWidth: 5 },
                 }}
                 animate={{
-                  duration: 2000,
+                  duration: 3000,
                 }}
                 data={chartData}
                 x="date"
