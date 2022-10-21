@@ -33,7 +33,7 @@ const Navbar = ({ navLink }) => {
             <h1>Longevity Losses</h1>
           </Box>
           <Box opacity={2} mr={5}>
-            {navLink === 'my dashboard' && (
+            {navLink === 'my dashboard' && user && (
               <Link to="/profile">
                 <Button textColor={'white'} variant="link" mr={5}>
                   {' '}

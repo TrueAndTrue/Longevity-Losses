@@ -27,7 +27,6 @@ const Profile = () => {
   const [newCalsInfo, setNewCalsInfo] = useState('');
   const [calsInput, setCalsInput] = useState(false);
   const [calVal, setCalVal] = useState(new Date());
-  const [showFire, setShowFire] = useState(false);
   const [displayMeals, setDisplayMeals] = useState([]);
   const [newMealInfo, setNewMealInfo] = useState('');
   const [newMealInfo2, setNewMealInfo2] = useState('');
@@ -73,6 +72,7 @@ const Profile = () => {
     );
     setNewMealInfo('');
     setNewMealInfo2('');
+    displayMeals.push(mealInfo)
   };
 
   useEffect(() => {
@@ -91,14 +91,9 @@ const Profile = () => {
   }, [calsInfo]);
 
   const submitCals = async () => {
-    setShowFire(!showFire);
     await apiClient.updateCals(user.sub, newCalsInfo);
     const clientCals = await apiClient.getCals(user.sub);
     setCalsInfo(clientCals);
-    setTimeout(() => {
-      setShowFire(false);
-    }, 2000);
-
     setCalsInput(false);
   };
 
@@ -268,12 +263,6 @@ const Profile = () => {
               </Box>
             </FormControl>
           )}
-          <Image
-            src={fire}
-            mt={'50px'}
-            data-showFire={showFire}
-            className={'fire'}
-          ></Image>
           {chartLoader && (
             <VictoryChart
               width={600}
@@ -480,7 +469,7 @@ const Profile = () => {
                 return (
                   <Box
                     display={'flex'}
-                    justifyContent={'center'}
+                    justifyContent={'space-around'}
                     alignItems={'center'}
                     mt={'5px'}
                     border={'2px solid white'}
@@ -499,7 +488,7 @@ const Profile = () => {
                     </Box>{' '}
                     <Box ml={'10px'} mt={'5px'} mb={'5px'}>
                       {' '}
-                      <RemoveBtn date={calVal} meal={meal}>
+                      <RemoveBtn date={calVal} meal={meal} displayMeals={displayMeals} setDisplayMeals={setDisplayMeals}>
                         {' '}
                       </RemoveBtn>{' '}
                     </Box>{' '}
